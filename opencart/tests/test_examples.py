@@ -1,11 +1,13 @@
+import allure
+import logging
 from selenium.webdriver.common.by import By
-from opencart.pages.admin_page import AdminPage
 from opencart.pages.add_product_administration_page import AdminAddProductPage
 from opencart.pages.delete_product_administration_page import AdminDeleteProductPage
 from opencart.pages.registration_page import RegistrationPage
 from opencart.pages.main_page import MainPage
 
 
+@allure.step("Добавление нового продукта на странице администрирования")
 def test_admin_add_new_product(browser, admin_login):
     new_product = AdminAddProductPage(browser)
     new_product.open_products()
@@ -22,6 +24,7 @@ def test_admin_add_new_product(browser, admin_login):
     assert new_product.successful_alert()
 
 
+@allure.step("Удаление последнего продукта на странице администрирования")
 def test_admin_delete_product(browser, admin_login):
     delete_product = AdminDeleteProductPage(browser)
     delete_product.open_products()
@@ -33,6 +36,7 @@ def test_admin_delete_product(browser, admin_login):
     assert delete_product.successful_alert()
 
 
+@allure.step("Регистрация нового пользователя")
 def test_registration_page(browser, test_config):
     registration = RegistrationPage(browser)
     registration.goto_registration_page()
@@ -45,6 +49,7 @@ def test_registration_page(browser, test_config):
     assert registration.successful_registration_alert()
 
 
+@allure.step("Изменение валюты из верхнего меню")
 def test_change_currency(browser):
     price = MainPage(browser)
     price.open_main_page()
@@ -57,4 +62,3 @@ def test_change_currency(browser):
     price.set_pound_sterling_currency()
     iphone_price_in_pound = browser.find_element(By.XPATH, "//span[contains(text(), '75.46')]")
     assert iphone_price_in_euros != iphone_price_in_pound
-
