@@ -2,6 +2,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 
+import time
+
 catalog_page = "/en-gb/catalog/laptop-notebook"
 cart_page = "/en-gb?route=checkout/cart"
 admin_login_page = "/administration"
@@ -40,8 +42,12 @@ def test_admin_login_page(browser):
     browser.find_element(By.ID, "input-username").send_keys("user")
     browser.find_element(By.ID, "input-password").clear()
     browser.find_element(By.ID, "input-password").send_keys("bitnami")
-    WebDriverWait(browser, timeout=3).until(
-        EC.visibility_of_element_located((By.XPATH, "//*[@id='form-login']/div[3]/button"))).click()
+    browser.find_element(By.XPATH, "//*[text()=' Login']").click()
+    # Почему-то с первого раза не логинится. Воспроизводится руками.
+    time.sleep(2)
+    browser.find_element(By.ID, "input-username").send_keys("user")
+    browser.find_element(By.ID, "input-password").send_keys("bitnami")
+    browser.find_element(By.XPATH, "//*[text()=' Login']").click()
     WebDriverWait(browser, timeout=3).until(
         EC.visibility_of_element_located((By.XPATH, "//span[contains(text(), 'John Doe')]")))
     WebDriverWait(browser, timeout=3).until(EC.visibility_of_element_located((By.ID, "navigation")))
@@ -52,12 +58,14 @@ def test_admin_login_page(browser):
 
 def test_registration_page(browser):
     browser.get(browser.url + registration_page)
-    browser.find_element(By.ID, "input-firstname").send_keys("Toster")
-    browser.find_element(By.ID, "input-lastname").send_keys("Toster")
-    browser.find_element(By.ID, "input-email").send_keys("Toster@toster.toster")
-    browser.find_element(By.ID, "input-password").send_keys("input-password")
-    browser.find_element(By.NAME, "agree").click()
-    browser.find_element(By.XPATH, "//button[text()='Continue']").click()
+    # Почему-то тоже срабатывает только со второго раза
+    for reg in range(2):
+        browser.find_element(By.ID, "input-firstname").send_keys("Toster")
+        browser.find_element(By.ID, "input-lastname").send_keys("Toster")
+        browser.find_element(By.ID, "input-email").send_keys("Toster@toster13.toster")
+        browser.find_element(By.ID, "input-password").send_keys("input-password")
+        browser.find_element(By.NAME, "agree").click()
+        browser.find_element(By.XPATH, "//button[text()='Continue']").click()
     WebDriverWait(browser, timeout=4).until(
         EC.visibility_of_element_located(
             (By.XPATH, "//p[text()='Congratulations! Your new account has been successfully created!']")))

@@ -1,0 +1,50 @@
+pipeline {
+    agent {
+        any
+    }
+    parameters{
+        choice(choices: ["opencart_tests"], description: "some test for opencart")
+    }
+    environment{
+        mailRecipients = "tester@tester.tester"
+        TEST_CREDS = credentials("tester")
+    }
+    stages {
+        stage("clone from git") {
+            steps{
+                checkout([$class                           : 'GitSCM', branches: [[name: "*/docker-compose"]],
+                          doGenerateSubmoduleConfigurations: false,
+                          userRemoteConfigs                : [[credentialsId: "4444",
+                                                               url          :  "https://github.com/temall/selenium_start_09072024"]]
+                          ])
+            }
+        }
+        stage("run tests") {
+            steps{
+                catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE')
+                    }
+                }
+            }
+        }
+        stage('run allure reports') {
+            steps {
+                allure([includeProperties: true,
+                                      jdk: '',
+                               properties: [],
+                        reportBuildPolicy: 'ALWAYS',
+                                  results: [[path: '**/allure-results']]
+                ])
+            }
+        }
+    }
+    post {
+        always{
+            echo 'Pipeline is complete'
+            emailext (
+            subject: "CMXQA.TESTS Отчет прогона тестов [${env.BUILD_NUMBER}] ",
+            body:"""Подробный allure-отчет: "<a href='${env.BUILD_URL}allure/'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>"</p>""",
+            to: "${env.mailRecipients}"
+            )
+        }
+    }
+}
