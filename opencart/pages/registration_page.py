@@ -16,7 +16,7 @@ class RegistrationPage(BasePage):
     @allure.step("Переход на страницу регисрации")
     def goto_registration_page(self):
         self.browser.get(
-            "http://192.168.0.102:8081/en-gb?route=account/register")
+            "http://172.25.128.1:8081/en-gb?route=account/register")
         return self
 
     @allure.step("Заполнение поля 'Имя'")

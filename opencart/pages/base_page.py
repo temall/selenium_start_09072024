@@ -25,7 +25,7 @@ class BasePage:
     successful_registration = By.XPATH, "//p[text()='Congratulations! Your new account has been successfully created!']"
 
     def open_page(self):
-        self.browser.get("http://192.168.0.102:8081")
+        self.browser.get("http://172.25.128.1:8081")
 
     def get_element(self, locator: tuple, timeout=5):
         return WebDriverWait(self.browser, timeout).until(EC.visibility_of_element_located(locator))
