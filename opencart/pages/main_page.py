@@ -13,7 +13,7 @@ class MainPage(BasePage):
 
     @allure.step("Открытие главное страницы")
     def open_main_page(self):
-        self.browser.get("http://192.168.0.102:8081")
+        self.browser.get("http://172.25.128.1:8081")
 
     @allure.step("Открытие списка валют")
     def choose_currency(self):

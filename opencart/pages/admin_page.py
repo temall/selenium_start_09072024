@@ -9,7 +9,7 @@ class AdminPage(BasePage):
 
     @allure.step("Переход на страницу администрирования")
     def goto_admin_page(self):
-        self.browser.get("http://192.168.0.102:8081/administration/index.php?route=common/login")
+        self.browser.get("http://172.25.128.1:8081/administration/index.php?route=common/login")
         self.logger.info("Осуществлен переход на траницу администрирования")
 
     @allure.step("Ввод логина администратора")
