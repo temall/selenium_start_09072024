@@ -1,0 +1,10 @@
+{
+"FIRST_NAME": "Tester",
+"LAST_NAME": "Tester",
+"EMAIL": "Tester@tester.tester",
+"PASSWORD": "Tester",
+"URL": "localhost:8081",
+"ADMIN_LOGIN": "user",
+"ADMIN_PASSWORD": "bitnami",
+"LOGGER_NAME": "test_cases"
+}

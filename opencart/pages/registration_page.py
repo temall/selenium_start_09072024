@@ -1,52 +1,45 @@
+import logging
+import time
+
 import allure
+from playwright.sync_api import Page, expect
+from opencart.pages.abstract_page import AbstractPage
 
-from opencart.pages.base_page import BasePage
-from selenium.webdriver.common.by import By
-from opencart.pages.config import Config
+# Локаторы
+first_name = "#input-firstname"
+last_name = "#input-lastname"
+email = "#input-email"
+password = "#input-password"
+privacy_agree = "//*[@class='text-end']//*[@class='form-check-input']"
+btn_continue = "//*[@class='btn btn-primary']"
 
 
-class RegistrationPage(BasePage):
-    input_first_name = By.ID, "input-firstname"
-    input_last_name = By.ID, "input-lastname"
-    input_email = By.ID, "input-email"
-    input_password = By.ID, "input-password"
-    privacy_policy_switcher = By.NAME, "agree"
-    btn_continue = By.XPATH, "//button[text()='Continue']"
+class RegistrationPage(AbstractPage):
+    page_path = "/index.php?route=account/register"
 
-    @allure.step("Переход на страницу регисрации")
-    def goto_registration_page(self):
-        self.browser.get(
-            "http://192.168.0.102:8081/en-gb?route=account/register")
-        return self
+    @allure.step("Открытие страницы регистрации")
+    def open(self):
+        super().open()
 
-    @allure.step("Заполнение поля 'Имя'")
-    def fill_first_name(self, test_config: Config):
-        self.browser.find_element(By.ID, "input-firstname").send_keys(test_config.first_name)
-        self.logger.info("Поле 'Имя' заполнено")
-        return self
+    @allure.step("Регистрация пользователя")
+    def user_regisration(self,
+                         user_first_name: str | None = None,
+                         user_last_name: str | None = None,
+                         user_email: str | None = None,
+                         user_password: str | None = None):
+        # Почему то регистрация проходит только со второго раза
+        for reg in range(2):
+            self.page.locator(first_name).fill(user_first_name)
+            self.page.locator(last_name).fill(user_last_name)
+            self.page.locator(email).fill(user_email)
+            self.page.locator(password).fill(user_password)
+            self.page.locator(privacy_agree).click()
+            self.page.locator(btn_continue).click()
+            time.sleep(2)
 
-    @allure.step("Заполнение поля 'Фамилия'")
-    def fill_last_name(self, test_config: Config):
-        self.browser.find_element(By.ID, "input-lastname").send_keys(test_config.last_name)
-        self.logger.info("Поле 'Фамилия' заполнено")
-        return self
+    def get_success_registration_message(self):
+        return self.page.locator(
+            "//*[text()='Congratulations! Your new account has been successfully created!']").text_content()
 
-    @allure.step("Заполнение поля 'Почта'")
-    def fill_email(self, test_config: Config):
-        self.browser.find_element(By.ID, "input-email").send_keys(test_config.email)
-        self.logger.info("Поле 'Почта' заполнено")
-        return self
-
-    @allure.step("Заполнение поля 'Пароль'")
-    def fill_password(self, test_config: Config):
-        self.browser.find_element(By.ID, "input-password").send_keys(test_config.password)
-        self.logger.info("Поле 'Пароль' заполнено")
-        return self
-
-    def agree_privacy_policy(self):
-        self.click(self.privacy_policy_switcher)
-        return self
-
-    def press_btn_continue(self):
-        self.click(self.btn_continue)
-        return self
+    def get_mail_error(self):
+        return self.page.locator("//*[@id='error-email']").text_content()
