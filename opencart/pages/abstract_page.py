@@ -1,12 +1,13 @@
 import logging
-import time
 import allure
 from playwright.sync_api import Page, expect, Locator
 
 from test_config import Config
 
+
 class OptionNotFoundException(Exception):
     ...
+
 
 class AbstractPage:
     page_path: str
@@ -19,7 +20,3 @@ class AbstractPage:
     @allure.step("Переход на страницу по ссылке")
     def open(self):
         self.page.goto(self.test_config.url + self.page_path)
-
-
-
-

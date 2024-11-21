@@ -27,16 +27,15 @@ tab_data = "//*[text()='Data']"
 tab_seo = "//*[text()='SEO']"
 tab_design = "//*[text()='Design']"
 # Локаторы меню "Продукты"
-menu_products = "//*[@id='collapse-1']/li[2]/a"   
-btn_add_new_product = "//*[@id='content']/div[1]/div/div/a"      
+menu_products = "//*[@id='collapse-1']/li[2]/a"
+btn_add_new_product = "//*[@id='content']/div[1]/div/div/a"
 new_product_name = "#input-name-1"
 new_product_tag = "#input-meta-title-1"
 new_product_model = "#input-model"
 new_product_price = "#input-price"
-btn_save_new_product = "//*[@id='content']/div[1]/div/div/button" 
+btn_save_new_product = "//*[@id='content']/div[1]/div/div/button"
 # Общие локаторы
 logout_button = "//*[text()='Logout']"
-
 
 
 class CatalogTabs:
@@ -60,14 +59,14 @@ class AdminPage(AbstractPage):
             self.page.locator(password_fild).fill(admin_password)
             self.page.locator(login_button).click()
             time.sleep(3)
-    
+
     @allure.step("Получение имени залогиненного пользователя")
     def get_username(self):
         logged_user = self.page.locator("//span[contains(text(), 'John Doe')]")
         if "\xa0\xa0\xa0" in logged_user.text_content():
             logged_user = logged_user.text_content().replace("\xa0\xa0\xa0", "")
         return logged_user
-    
+
     @allure.step("Переход на кладку {tab}")
     def open_tab(self, tab=CatalogTabs):
         if tab == CatalogTabs.General:
@@ -88,20 +87,20 @@ class AdminPage(AbstractPage):
         self.page.locator(close_red_window).click()
 
     @allure.step("Заполнение вкладки General радела 'Категории'")
-    def fill_new_category_general_tab(self, 
-                                      category_name: str | None=None, 
-                                      category_tag: str | None=None):
+    def fill_new_category_general_tab(self,
+                                      category_name: str | None = None,
+                                      category_tag: str | None = None):
         self.page.locator(new_category_name).fill(category_name)
         self.page.locator(new_category_tag).fill(category_tag)
-    
+
     @allure.step("Заполнение вкладки Data радела 'Категории'")
     def fill_new_category_data_tab(self,
-                                   sort_order: str | None=None):
+                                   sort_order: str | None = None):
         self.page.locator(new_sort_order).fill(sort_order)
 
     @allure.step("Заполнение вкладки SEO радела 'Категории'")
     def fill_new_category_seo_tab(self,
-                                  key_word: set | None=None):
+                                  key_word: str | None = None):
         self.page.locator(new_key_word).fill(key_word)
 
     @allure.step("Сохранение новой категории")
@@ -110,7 +109,7 @@ class AdminPage(AbstractPage):
 
     def close_red_allert(self):
         self.page.get_by_role("button", name="Close").click()
-    
+
     @allure.step("Создание нового продукта")
     def admin_add_new_product(self):
         self.page.locator(menu_catalog).click()
@@ -118,25 +117,24 @@ class AdminPage(AbstractPage):
         self.page.locator(menu_products).click()
         self.page.locator(btn_add_new_product).click()
         self.page.locator(close_red_window).click()
-    
+
     @allure.step("Заполнение вкладки General радела 'Продукты'")
-    def fill_new_product_general_tab(self, 
-                                     product_name: str | None=None, 
-                                     product_tag: str | None=None):
+    def fill_new_product_general_tab(self,
+                                     product_name: str | None = None,
+                                     product_tag: str | None = None):
         self.page.locator(new_product_name).fill(product_name)
         self.page.locator(new_product_tag).fill(product_tag)
 
-
     @allure.step("Заполнение вкладки Data радела 'Продукты'")
     def fill_new_product_data_tab(self,
-                                  model: str | None=None):
+                                  model: str | None = None):
         self.page.locator(new_product_model).fill(model)
 
     @allure.step("Заполнение вкладки SEO радела 'Продукты'")
     def fill_new_product_seo_tab(self,
-                                 key_word: set | None=None):
+                                 key_word: str | None = None):
         self.page.locator(new_key_word).fill(key_word)
-    
+
     @allure.step("Сохранение нового продукта")
     def save_new_product(self):
         self.page.locator(btn_save_new_product).click()
@@ -144,8 +142,3 @@ class AdminPage(AbstractPage):
     @allure.step("Logout администратора")
     def admin_logout(self):
         self.page.locator(logout_button).click()
-    
-
-
-
-

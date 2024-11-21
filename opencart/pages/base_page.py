@@ -31,7 +31,6 @@ pound = "//*[@id='form-currency']//*[text()='£ Pound Sterling']"
 us = "//*[@id='form-currency']//*[text()='$ US Dollar']"
 
 
-
 class BasePageTabs:
     Desktop = "Desktop"
     Laptop_Notebooks = "Laptop_Notebooks"
@@ -42,14 +41,15 @@ class BasePageTabs:
     Cameras = "Cameras"
     MP3_Players = "MP3_Players"
 
+
 class Currency:
     Euro = "Euro"
     Pound = "Pound"
     US = "US"
 
+
 class BasePage(AbstractPage):
     page_path = ""
-
 
     @allure.step("Открытие основной страницы")
     def open(self):
@@ -86,8 +86,8 @@ class BasePage(AbstractPage):
             self.page.locator(us).click()
 
     @allure.step("Поиск товара в строке 'Поиск'")
-    def search_item(self, 
-                    item: str | None=None):
+    def search_item(self,
+                    item: str | None = None):
         self.page.locator(search_field).get_by_placeholder("Search").fill(item)
         self.page.locator(search_button).click()
         time.sleep(1)
@@ -99,15 +99,15 @@ class BasePage(AbstractPage):
     @allure.step("Добавление товара в wishlist")
     def add_to_wishlist(self):
         self.page.locator(add_to_wishlist).click()
-    
+
     @allure.step("Добавление товара для сравнения")
     def add_to_compare(self):
         self.page.locator(compare_product).click()
-    
+
     def get_added_notification(self):
         success_added = self.page.locator("//*[@class='alert alert-success alert-dismissible']")
         return success_added.text_content()
-    
+
     @allure.step("Переход в корзину товаров")
     def open_cart(self):
         self.page.locator(open_cart).click()
@@ -115,6 +115,3 @@ class BasePage(AbstractPage):
     @allure.step("Проверка стоимости набранного товара")
     def check_total_price(self):
         return self.page.locator(total_price).text_content()
-
-
-

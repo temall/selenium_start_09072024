@@ -1,0 +1,68 @@
+# OPENCART_PORT=8081 PHPADMIN_PORT=8888 LOCAL_IP=$(hostname -I | grep -o "^[0-9.]*") docker compose up -d
+
+#version: '3'
+services:
+
+  phpadmin:
+    image: 'phpmyadmin/phpmyadmin:latest'
+    environment:
+      - PMA_HOST=mariadb
+      - PMA_PORT=3306
+      - PMA_USER=bn_opencart
+    ports:
+      - '8888:80'
+    networks:
+      - my_network
+  mariadb:
+    image: docker.io/bitnami/mariadb:11.2
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_USER=bn_opencart
+      - MARIADB_DATABASE=bitnami_opencart
+    volumes:
+      - 'mariadb_data:/bitnami/mariadb'
+    ports:
+      - '3306:3306'
+    networks:
+      - my_network
+  opencart:
+    image: docker.io/bitnami/opencart:4
+    ports:
+      - '8081:8080'
+      - '443:8443'
+    environment:
+      - OPENCART_HOST=172.25.128.1:8081
+      - OPENCART_DATABASE_HOST=mariadb
+      - OPENCART_DATABASE_PORT_NUMBER=3306
+      - OPENCART_DATABASE_USER=bn_opencart
+      - OPENCART_DATABASE_NAME=bitnami_opencart
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - 'opencart_data:/bitnami/opencart'
+      - 'opencart_storage_data:/bitnami/opencart_storage/'
+    networks:
+      - my_network
+    depends_on:
+      - mariadb
+  jenkins:
+    image: sha256:a8bb21e8996dc03abf8802efea01fc1ac0e94a5c48a3e9d19714eff322826f7f
+    ports:
+      - '8082:8080'
+    depends_on:
+      - mariadb
+      - phpadmin
+      - opencart
+    networks:
+      - my_network
+networks:
+  my_network:
+    container: opencart
+volumes:
+  mariadb_data:
+    driver: local
+  opencart_data:
+    driver: local
+  opencart_storage_data:
+    driver: local
+  jenkins_data:
+    driver: local

@@ -3,7 +3,7 @@
 "LAST_NAME": "Tester",
 "EMAIL": "Tester@tester.tester",
 "PASSWORD": "Tester",
-"URL": "172.25.128.1:8081",
+"URL": "localhost:8081",
 "ADMIN_LOGIN": "user",
 "ADMIN_PASSWORD": "bitnami",
 "LOGGER_NAME": "test_cases"
